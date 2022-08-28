@@ -4,9 +4,8 @@ import Header from '../../components/Header/Header';
 import { getCategories } from '../../services/category.service';
 import { getProducts } from '../../services/product.service';
 
-
 const Home = () => {
-
+    
     const [categories, setCategories] = useState([]);
     const [topFeaturedProducts, setTopFeaturedProducts] = useState([]);
 

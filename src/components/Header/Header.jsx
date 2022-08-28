@@ -1,12 +1,22 @@
-import React, { useCallback, useState } from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import Logo from '../Logo/Logo';
 
 function Header() {
+    const { auth } = useSelector(state => state.auth)
+    const [user, setUser] = useState(null)
+
     const [keyword, setKeyword] = useState("");
 
     const handleSearchOnChange = useCallback((value) => {
         setKeyword(value)
     }, [])
+
+    useEffect(() => {
+        if (auth && auth?.user) {
+            setUser(auth.user)
+        }
+    }, [auth])
 
     return (
         <div className="h-20 px-10 py-5">
@@ -46,21 +56,27 @@ function Header() {
                         </div>
                     </div>
 
-                    <div className=' flex ml-5  h-full justify-center hover:cursor-pointer'>
-                        <div
-                            className='h-full inline-flex items-center
-                            rounded-tl-md rounded-bl-md'
-                        >
-                            <span className='text-blue-primary ml-6 md:block hidden'>Hello, <b>Minh Trung</b></span>
+                    {user && (
+                        <div className=' flex ml-5  h-full justify-center hover:cursor-pointer'>
+                            <div
+                                className='h-full inline-flex items-center
+                                rounded-tl-md rounded-bl-md'
+                            >
+                                <span className='text-blue-primary ml-6 md:block hidden'>Hello, <b>{user?.displayName}</b></span>
+                            </div>
+                            <div className='h-full ml-4 relative z-[1]'>
+                                <img
+                                    className='object-cover border-2 border-[#ff6d4d] block rounded-full overflow-hidden h-full aspect-square'
+                                    src={user?.avatarLink}
+                                    alt=""
+                                />
+                            </div>
                         </div>
-                        <div className='h-full ml-4 relative z-[1]'>
-                            <img className='object-cover border-2 border-[#ff6d4d] block rounded-full overflow-hidden h-full aspect-square' src="https://scontent.fsgn5-10.fna.fbcdn.net/v/t1.6435-9/161814663_435341347536927_2718388379880840379_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=174925&_nc_ohc=tcd_jUgOvAIAX9aN9nl&_nc_ht=scontent.fsgn5-10.fna&oh=00_AT8uzQ85qlOiz3AlxCIkr1PLR6sTXspnUiQsjJ8akwrEmw&oe=62FE032D" alt="" />
-                        </div>
-                    </div>
+                    )}
                 </div>
             </div>
         </div>
     );
 }
 
-export default Header;
+export default memo(Header);
