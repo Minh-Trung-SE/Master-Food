@@ -4,14 +4,12 @@ import { Auth } from "./pages/Auth/Auth";
 import Home from "./pages/Home/Home";
 import { initFirebase, subscribeOnAuthStateChanged } from "./services/firebase.service";
 
-
 function App() {
     useEffect(() => {
         initFirebase();
-        const usubscribe = subscribeOnAuthStateChanged();
-        return usubscribe;
+        const unsubscribe = subscribeOnAuthStateChanged();
+        return unsubscribe;
     }, [])
-
     
     return (
         <Routes>

@@ -1,22 +1,79 @@
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
+import useClickOutsite from '../../hook/UseClickOutside';
 import Logo from '../Logo/Logo';
 
-function Header() {
-    const { auth } = useSelector(state => state.auth)
-    const [user, setUser] = useState(null)
+const Account = memo(
+    ({ user }) => {
+        const [showDropdown, setShowDropdown] = useState(false)
+        const handleClickOutsite = useCallback(() => {
+            setShowDropdown(false)
+        }, [])
+        const dropdownRef = useClickOutsite(handleClickOutsite)
+
+        return (
+            <div
+                className='flex ml-5 h-full justify-center hover:cursor-pointer'
+                ref={dropdownRef}
+            >
+                <div
+                    className='h-full inline-flex items-center rounded-tl-md rounded-bl-md'
+                >
+                    <span className='text-blue-primary ml-6 md:block hidden'>Hello, <b>{user?.displayName}</b></span>
+                </div>
+                <div
+                    className='h-full ml-4 relative z-[1]'
+                    onClick={() => setShowDropdown(toggle => !toggle)}
+                >
+                    <img
+                        className='object-cover border-2 border-[#ff6d4d] block rounded-full overflow-hidden h-full aspect-square'
+                        src={user?.avatarLink}
+                        alt="User avatar."
+                    />
+                    {
+                        showDropdown && (
+                            <div
+                                className='absolute top-full right-0'
+                            >
+                                <ul className='mt-5 bg-white py-4 rounded min-w-[160px]'>
+                                    <li className='list-none px-5 py-2 hover:bg-ice-blue'>
+                                        <div className='flex items-center'>
+                                            <div className='w-fit h-fit mr-2 text-blue-primary '>
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                                                </svg>
+                                            </div>
+                                            <span className='text-gray-primary hover:text-blue-primary'>Profile</span>
+                                        </div>
+                                    </li>
+                                    <li className='list-none mt-2 px-5 py-2 hover:bg-ice-blue'>
+                                        <div className='flex items-center'>
+                                            <div className='w-fit h-fit mr-2 text-orange-primary '>
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+                                                </svg>
+                                            </div>
+                                            <span className='text-gray-primary hover:text-blue-primary'>Logout</span>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        )
+                    }
+                </div>
+            </div>
+        )
+    }
+)
+
+const Header = () => {
+    const { auth: { user } } = useSelector(state => state.auth)
 
     const [keyword, setKeyword] = useState("");
 
     const handleSearchOnChange = useCallback((value) => {
         setKeyword(value)
     }, [])
-
-    useEffect(() => {
-        if (auth && auth?.user) {
-            setUser(auth.user)
-        }
-    }, [auth])
 
     return (
         <div className="h-20 px-10 py-5">
@@ -56,23 +113,11 @@ function Header() {
                         </div>
                     </div>
 
-                    {user && (
-                        <div className=' flex ml-5  h-full justify-center hover:cursor-pointer'>
-                            <div
-                                className='h-full inline-flex items-center
-                                rounded-tl-md rounded-bl-md'
-                            >
-                                <span className='text-blue-primary ml-6 md:block hidden'>Hello, <b>{user?.displayName}</b></span>
-                            </div>
-                            <div className='h-full ml-4 relative z-[1]'>
-                                <img
-                                    className='object-cover border-2 border-[#ff6d4d] block rounded-full overflow-hidden h-full aspect-square'
-                                    src={user?.avatarLink}
-                                    alt=""
-                                />
-                            </div>
-                        </div>
-                    )}
+                    {
+                        user && (
+                            <Account user={user} />
+                        )
+                    }
                 </div>
             </div>
         </div>

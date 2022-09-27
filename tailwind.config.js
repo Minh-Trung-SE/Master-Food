@@ -18,7 +18,8 @@ module.exports = {
       'blue-primary': '#2f4cdd',
       'orange-primary': '#ff6d4d',
       'gray-primary': '#7e7e7e',
-      'primary-bg': '#f1f1f1'
+      'primary-bg': '#f1f1f1',
+      'ice-blue': '#e9ecef'
     },
     extend: {},
   },
