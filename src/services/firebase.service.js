@@ -2,7 +2,7 @@ import axios from "axios";
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup } from "firebase/auth";
 import { API_URL } from "../constants/api.constant";
-import { saveAuth } from "../redux/auth/authSlice";
+import { deleteAuth, saveAuth } from "../redux/auth/authSlice";
 import { store } from "../redux/store";
 
 
@@ -31,7 +31,7 @@ export const firebaseLogin = async (authRequest) => {
         createdAt: data?.createdAt,
         expiredAt: data?.expiredAt
     }
-    store.dispatch(saveAuth({ user, token }))
+    store.dispatch(saveAuth({ user, token })) 
 }
 
 export const subscribeOnAuthStateChanged = () => {
@@ -63,9 +63,17 @@ export const subscribeOnAuthStateChanged = () => {
 
 
 export const emailSiginWithPopup = async () => {
-
     const auth = await getAuth()
     const socailProvider = new GoogleAuthProvider();
     await signInWithPopup(auth, socailProvider);
 }
 
+export const logout = async () => {
+    const auth = getAuth()
+    
+    if(auth.currentUser){
+        await auth.signOut()
+        store.dispatch(deleteAuth())
+    }
+    
+}
